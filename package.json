@@ -1,0 +1,27 @@
+{
+  "name": "octopus-model",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "tsc",
+    "tsc:w": "tsc && tsc -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tralalere/octopus-model.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tralalere/octopus-model/issues"
+  },
+  "homepage": "https://github.com/tralalere/octopus-model#readme",
+  "devDependencies": {
+    "typescript": "^2.5.3"
+  },
+  "dependencies": {
+    "systemjs": "^0.20.19"
+  }
+}
