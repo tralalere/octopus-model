@@ -25,7 +25,7 @@ export class Validators {
     static array():ArrayValidator {
         
         return new ArrayValidator((val:any) => {
-            return true;
+            return Array.isArray(val);
         });
     }
 
