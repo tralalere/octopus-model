@@ -1,15 +1,24 @@
 /**
  * Created by Christophe on 17/10/2017.
  */
-import {StringValidator} from "./string-validator.class";
 
 export class Validator {
 
-    static string():StringValidator {
+    protected _stack:Function[] = [];
 
-        return new StringValidator((val:any) => {
-            return (typeof val) === "string";
-        });
-
+    constructor(func:Function) {
+        this._stack.push(func);
     }
+
+    getStackValidity(value:any):boolean {
+
+        for (let func of this._stack) {
+            if (!func(value)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }

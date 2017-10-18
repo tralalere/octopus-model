@@ -1,13 +1,13 @@
 /**
  * Created by Christophe on 17/10/2017.
  */
-import {BaseValidator} from "./validators/base-validator.class";
+import {Validator} from "./validators/validator.class";
 
 export class ModelSchema {
 
     constructor(
         public version:number,
-        public attributes:{[key:string]:BaseValidator} = {}
+        public attributes:{[key:string]:Validator} = {}
     ) {}
 
     validateModel(attributes:{[key:string]:any}):boolean {
@@ -20,7 +20,7 @@ export class ModelSchema {
                     return false;
                 }
 
-                if (! this.attributes[key].getStackValidity(attributes[key])) {
+                if (!this.attributes[key].getStackValidity(attributes[key])) {
                     return false;
                 }
             }

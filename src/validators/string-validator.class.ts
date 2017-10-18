@@ -1,9 +1,9 @@
 /**
  * Created by Christophe on 17/10/2017.
  */
-import {BaseValidator} from "./base-validator.class";
+import {Validator} from "./validator.class";
 
-export class StringValidator extends BaseValidator {
+export class StringValidator extends Validator {
     
     constructor(
         func:Function
