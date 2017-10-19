@@ -5,6 +5,7 @@ import {StringValidator} from "./string-validator.class";
 import {NumberValidator} from "./number-validator.class";
 import {ArrayValidator} from "./array-validator.class";
 import {ObjectValidator} from "./object-validator.class";
+import {Validator} from "./validator.class";
 
 export class Validators {
 
@@ -33,6 +34,13 @@ export class Validators {
 
         return new ObjectValidator((val:any) => {
             return (typeof val) === "object";
+        });
+    }
+
+    static boolean():Validator {
+
+        return new Validator((val:any) => {
+            return (typeof val) === "boolean";
         });
     }
 }
