@@ -15,6 +15,7 @@ export class ModelSchema {
         public version:number = 0
     ) {
         this._attributes[version] = attributes;
+        this._versionNumbers.push(version);
     }
 
     validateModel(attributes:{[key:string]:any}):boolean {
@@ -54,7 +55,7 @@ export class ModelSchema {
             return null;
         }
 
-        let versions:number[] = this._versionNumbers.slice(0, versionIndex);
+        let versions:number[] = this._versionNumbers.slice(0, versionIndex + 1);
         let attributes:ModelSchemaAttributes = {};
 
         for (let i:number = 0; i < versions.length; i++) {
@@ -74,6 +75,8 @@ export class ModelSchema {
     }
     
     validateModelAtVersion(version:number, attributes:{[key:string]:any}):boolean {
+        let completeAttributes:ModelSchemaAttributes = this._getFieldsAtVersion(version);
+        console.log("complete", completeAttributes);
         return false;
     }
 

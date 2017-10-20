@@ -42,11 +42,16 @@ schema1.addVersion(1, {
     ]
 });
 
-var b:boolean = schema1.validateModel({
+/*var b:boolean = schema1.validateModel({
     id: 50,
     label: "ozetestrerk"
-});
+});*/
+
+console.log(schema1.validateModelAtVersion(1, {
+    id: 50,
+    label: "ozetestrerk"
+}));
 
 
-console.log ("result", b);
-document.write(String(b));
+/*console.log ("result", b);
+document.write(String(b));*/
