@@ -1,7 +1,7 @@
 /**
  * Created by Christophe on 19/10/2017.
  */
-import {Validator} from "./validators/validator.class";
+import {Validator} from "../validators/validator.class";
 
 export interface ModelSchemaAttributes {
     [key:string]: {

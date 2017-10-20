@@ -14,7 +14,7 @@ import {Validators} from "../src/validators/validators.class";
 });*/
 
 
-var schema1:ModelSchema = new ModelSchema(1, {
+var schema1:ModelSchema = new ModelSchema({
     id: {
         defaultValue: 0,
         validator: Validators.number().positive()
@@ -30,6 +30,15 @@ var schema1:ModelSchema = new ModelSchema(1, {
     }
 });
 
+schema1.addVersion(1, {
+    additions: {
+        isvalid: {
+            defaultValue: false,
+            validator: Validators.boolean()
+        }
+    }
+});
+
 var b:boolean = schema1.validateModel({
     id: 50,
     label: "ozetestrerk"
@@ -37,3 +46,4 @@ var b:boolean = schema1.validateModel({
 
 
 console.log ("result", b);
+document.write(String(b));
