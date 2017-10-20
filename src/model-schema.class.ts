@@ -128,7 +128,7 @@ export class ModelSchema {
         let completeAttributes:ModelSchemaAttributes = this._getFieldsAtVersion(version);
 
         for (let key in completeAttributes) {
-            if (completeAttributes.hasOwnProperty(key)) {
+            if (completeAttributes.hasOwnProperty(key) && completeAttributes[key].generated !== false) {
                 generatedModel[key] = completeAttributes[key].defaultValue;
             }
         }

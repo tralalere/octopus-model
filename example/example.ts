@@ -59,6 +59,7 @@ console.log(schema1.validateModel({
 console.log("0", schema1.generateModel(0));
 console.log("1", schema1.generateModel(1));
 console.log("2", schema1.generateModel(2));
+console.log(schema1.generateModel());
 
 /*console.log ("result", b);
 document.write(String(b));*/
