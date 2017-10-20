@@ -47,12 +47,12 @@ export class ArrayValidator extends Validator {
         return this._isTypeOf("number");
     }
 
-    schema(schema:ModelSchema):ArrayValidator {
+    schema(schema:ModelSchema, version:number = null):ArrayValidator {
 
         this._stack.push((val:{[key:string]:any}[]) => {
 
             for (let elem of val) {
-                if (!schema.validateModel(elem)) {
+                if (!schema.validateModel(elem, version)) {
                     return false;
                 }
             }

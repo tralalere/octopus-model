@@ -12,24 +12,25 @@ export class ObjectValidator extends Validator {
         super(func);
     }
 
-    schema(schema:ModelSchema):ObjectValidator {
+    schema(schema:ModelSchema, version:number = null):ObjectValidator {
 
         this._stack.push((val:{[key:string]:any}) => {
-            return schema.validateModel(val);
+            return schema.validateModel(val, version);
         });
 
         return this;
     }
 
-    keySchema(key:string, schema:ModelSchema):ObjectValidator {
+    keySchema(key:string, schema:ModelSchema, version:number = null):ObjectValidator {
 
         this._stack.push((val:{[key:string]:any}) => {
 
-            if (!val[key]) {
+            // TODO: undefined à voir
+            if (val[key] === undefined) {
                 return false;
             }
 
-            return schema.validateModel(val[key]);
+            return schema.validateModel(val[key], version);
         });
 
         return this;

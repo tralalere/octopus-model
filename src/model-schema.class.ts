@@ -18,7 +18,7 @@ export class ModelSchema {
         this._versionNumbers.push(version);
     }
 
-    validateModel(attributes:{[key:string]:any}):boolean {
+    /*validateModel(attributes:{[key:string]:any}):boolean {
 
         for (let key in attributes) {
 
@@ -45,7 +45,7 @@ export class ModelSchema {
         }
 
         return true;
-    }
+    }*/
 
     private _getFieldsAtVersion(version:number):ModelSchemaAttributes {
 
@@ -63,8 +63,15 @@ export class ModelSchema {
             let versionNumber:number = versions[i];
             let attributesInVersion:ModelSchemaAttributes = this._attributes[versionNumber];
 
-            for (let key in attributesInVersion) {
+            if (this._deletions[versionNumber]) {
+                for (let key of this._deletions[versionNumber]) {
+                    if (attributes[key]) {
+                        delete attributes[key];
+                    }
+                }
+            }
 
+            for (let key in attributesInVersion) {
                 if (attributesInVersion.hasOwnProperty(key)) {
                     attributes[key] = attributesInVersion[key];
                 }
@@ -74,14 +81,59 @@ export class ModelSchema {
         return attributes;
     }
     
-    validateModelAtVersion(version:number, attributes:{[key:string]:any}):boolean {
+    validateModel(attributes:{[key:string]:any}, version:number = null):boolean {
+
+        if (version === null) {
+            version = this._versionNumbers[this._versionNumbers.length - 1];
+        }
+
         let completeAttributes:ModelSchemaAttributes = this._getFieldsAtVersion(version);
-        console.log("complete", completeAttributes);
-        return false;
+
+        for (let key in attributes) {
+
+            if (attributes.hasOwnProperty(key)) {
+
+                if (!completeAttributes[key]) {
+                    return false;
+                }
+            }
+        }
+
+        for (let key in completeAttributes) {
+
+            if (completeAttributes.hasOwnProperty(key)) {
+
+                // TODO: verifier si on peut tester d'une meilleure manière la non-définition de la valeur
+                if (attributes[key] === undefined && completeAttributes[key].required !== false) {
+                    return false;
+                }
+
+                if (attributes[key] && !completeAttributes[key].validator.getStackValidity(attributes[key])) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
-    generateModelAtVersion(version:number):{[key:string]:any} {
-        return {};
+    generateModel(version:number = null):{[key:string]:any} {
+
+        let generatedModel:{[key:string]:any} = {};
+
+        if (version === null) {
+            version = this._versionNumbers[this._versionNumbers.length - 1];
+        }
+
+        let completeAttributes:ModelSchemaAttributes = this._getFieldsAtVersion(version);
+
+        for (let key in completeAttributes) {
+            if (completeAttributes.hasOwnProperty(key)) {
+                generatedModel[key] = completeAttributes[key].defaultValue;
+            }
+        }
+
+        return generatedModel;
     }
 
     addVersion(versionNumber:number, attributes:ModelSchemaExtension) {
@@ -95,6 +147,10 @@ export class ModelSchema {
 
         if (attributes.additions) {
             this._attributes[versionNumber] = attributes.additions;
+        }
+
+        if (attributes.deletions) {
+            this._deletions[versionNumber] = attributes.deletions;
         }
     }
 }
