@@ -7,6 +7,7 @@ export interface ModelSchemaAttributes {
     [key:string]: {
         defaultValue:any,
         validator:Validator,
-        required?:boolean
+        required?:boolean,
+        generated?:boolean
     }
 }

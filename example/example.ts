@@ -36,7 +36,10 @@ schema1.addVersion(1, {
             defaultValue: false,
             validator: Validators.boolean()
         }
-    }
+    },
+    deletions: [
+        
+    ]
 });
 
 var b:boolean = schema1.validateModel({
