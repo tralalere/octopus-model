@@ -5,8 +5,9 @@ import {ModelSchemaAttributes} from "./interfaces/model-schema-attributes.interf
 import {ModelSchemaExtension} from "./interfaces/model-schema-extension.interface";
 import {Generator} from "./generators/generator.class";
 import {ExtendedModelSchema} from "./extended-model-schema.class";
+import {DataSchema} from "./data-schema.class";
 
-export class ModelSchema {
+export class ModelSchema extends DataSchema {
 
     private _versionNumbers:number[] = [];
     private _attributes:{[key:number]:ModelSchemaAttributes} = {};
@@ -17,6 +18,8 @@ export class ModelSchema {
         public attributes:ModelSchemaAttributes = {},
         public version:number = 0
     ) {
+        super();
+        
         this._attributes[version] = attributes;
         this._versionNumbers.push(version);
     }

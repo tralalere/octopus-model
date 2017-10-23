@@ -4,6 +4,8 @@
 import {ModelSchema} from "../src/model-schema.class";
 import {Validators} from "../src/validators/validators.class";
 import {Generators} from "../src/generators/generators.class";
+import {ModelSchemaExtension} from "../src/interfaces/model-schema-extension.interface";
+import {ExtendedModelSchema} from "../src/extended-model-schema.class";
 
 /*var schema1:ModelSchema = new ModelSchema(1, {
     label: Validators.string().contains("test"),
@@ -47,11 +49,20 @@ let subSchema:ModelSchema = new ModelSchema({
     }
 });
 
+let subsub:ExtendedModelSchema = subSchema.addVersion(1, {
+    additions: {
+        test: {
+            defaultValue: "ttt",
+            validator: Validators.string()
+        }
+    }
+});
+
 schema1.addVersion(2, {
     additions: {
         arr: {
-            defaultValue: Generators.array(subSchema, 5),
-            validator: Validators.array()
+            defaultValue: Generators.array(subsub, 5),
+            validator: Validators.array().schema(subSchema)
         }
     },
     deletions: [
@@ -73,7 +84,10 @@ console.log(schema1.validateModel({
 console.log("0", schema1.generateModel(0));
 console.log("1", schema1.generateModel(1));
 
+var m:Object = schema1.generateModel(2);
 console.log("2", schema1.generateModel(2));
+
+//console.log(schema1.validateModel(m))
 
 /*console.log ("result", b);
 document.write(String(b));*/

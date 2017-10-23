@@ -3,17 +3,18 @@
  */
 import {ModelSchema} from "../model-schema.class";
 import {Generator} from "./generator.class";
+import {DataSchema} from "../data-schema.class";
 
 export class Generators {
 
-    static array(value:any|ModelSchema, length:number) {
+    static array(value:any|DataSchema, length:number = 1) {
 
         return new Generator(() => {
             var arr:any[] = [];
 
-            if (value instanceof ModelSchema) {
+            if (value instanceof DataSchema) {
                 for (let i:number = 0; i < length; i++) {
-                    arr.push((value as ModelSchema).generateModel());
+                    arr.push((value as DataSchema).generateModel());
                 }
             } else {
                 for (let i:number = 0; i < length; i++) {
@@ -22,6 +23,13 @@ export class Generators {
             }
 
             return arr;
+        });
+    }
+
+    static object(schema:DataSchema) {
+
+        return new Generator(() => {
+            return schema.generateModel();
         });
     }
 }
