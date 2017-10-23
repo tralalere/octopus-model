@@ -1,7 +1,6 @@
 /**
  * Created by Christophe on 23/10/2017.
  */
-import {ModelSchema} from "../model-schema.class";
 import {Generator} from "./generator.class";
 import {DataSchema} from "../data-schema.class";
 
@@ -10,7 +9,7 @@ export class Generators {
     static array(value:any|DataSchema, length:number = 1) {
 
         return new Generator(() => {
-            var arr:any[] = [];
+            let arr:any[] = [];
 
             if (value instanceof DataSchema) {
                 for (let i:number = 0; i < length; i++) {

@@ -32,6 +32,7 @@ schema1.addVersion(1, {
     }
 });
 
+
 let subSchema:ModelSchema = new ModelSchema({
     attr1: {
         defaultValue: "val attr1",
@@ -48,11 +49,16 @@ let subsub:ExtendedModelSchema = subSchema.addVersion(1, {
     }
 });
 
+
 schema1.addVersion(2, {
     additions: {
         arr: {
             defaultValue: Generators.array(subsub, 5),
-            validator: Validators.array().schema(subSchema)
+            validator: Validators.array().schema(subsub)
+        },
+        obj: {
+            defaultValue: Generators.object(subsub),
+            validator: Validators.object()
         }
     },
     deletions: [
@@ -63,9 +69,9 @@ schema1.addVersion(2, {
 
 console.log(schema1.validateModel({
     id: 50,
+    label: "df gfdgdfgdfg",
     text: "ozetestrerk",
-    isvalid: false
-}, 2));
+},0));
 
 console.log("0", schema1.generateModel(0));
 console.log("1", schema1.generateModel(1));
