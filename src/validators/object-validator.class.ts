@@ -2,7 +2,7 @@
  * Created by Christophe on 18/10/2017.
  */
 import {Validator} from "./validator.class";
-import {ModelSchema} from "../model-schema.class";
+import {DataSchema} from "../data-schema.class";
 
 export class ObjectValidator extends Validator {
 
@@ -12,7 +12,7 @@ export class ObjectValidator extends Validator {
         super(func);
     }
 
-    schema(schema:ModelSchema, version:number = null):ObjectValidator {
+    schema(schema:DataSchema, version:number = null):ObjectValidator {
 
         this._stack.push((val:{[key:string]:any}) => {
             return schema.validateModel(val, version);
@@ -21,7 +21,7 @@ export class ObjectValidator extends Validator {
         return this;
     }
 
-    keySchema(key:string, schema:ModelSchema, version:number = null):ObjectValidator {
+    keySchema(key:string, schema:DataSchema, version:number = null):ObjectValidator {
 
         this._stack.push((val:{[key:string]:any}) => {
 

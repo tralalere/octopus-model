@@ -43,4 +43,11 @@ export class Validators {
             return (typeof val) === "boolean";
         });
     }
+
+    static custom(func:Function):Validator {
+
+        return new Validator((val:any) => {
+            return func(val);
+        });
+    }
 }

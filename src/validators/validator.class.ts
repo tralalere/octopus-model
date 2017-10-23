@@ -10,11 +10,19 @@ export class Validator {
         this._stack.push(func);
     }
 
-    // TODO: voir où placer cette fonction
-    nonNull():any {
+    nonNull():Validator {
 
         this._stack.push((value:any) => {
             return value !== null;
+        });
+
+        return this;
+    }
+
+    custom(func:Function):Validator {
+
+        this._stack.push((value:any) => {
+            return func(value);
         });
 
         return this;
