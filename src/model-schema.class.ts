@@ -3,12 +3,15 @@
  */
 import {ModelSchemaAttributes} from "./interfaces/model-schema-attributes.interface";
 import {ModelSchemaExtension} from "./interfaces/model-schema-extension.interface";
+import {Generator} from "./generators/generator.class";
+import {ExtendedModelSchema} from "./extended-model-schema.class";
 
 export class ModelSchema {
 
     private _versionNumbers:number[] = [];
     private _attributes:{[key:number]:ModelSchemaAttributes} = {};
     private _deletions:{[key:number]:string[]} = {};
+    private _extensions:{[key:number]:ExtendedModelSchema} = {};
 
     constructor(
         public attributes:ModelSchemaAttributes = {},
@@ -17,35 +20,6 @@ export class ModelSchema {
         this._attributes[version] = attributes;
         this._versionNumbers.push(version);
     }
-
-    /*validateModel(attributes:{[key:string]:any}):boolean {
-
-        for (let key in attributes) {
-
-            if (attributes.hasOwnProperty(key)) {
-
-                if (!this.attributes[key]) {
-                    return false;
-                }
-            }
-        }
-        
-        for (let key in this.attributes) {
-            
-            if (this.attributes.hasOwnProperty(key)) {
-
-                if (!attributes[key] && this.attributes[key].required !== false) {
-                    return false;
-                }
-
-                if (attributes[key] && !this.attributes[key].validator.getStackValidity(attributes[key])) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }*/
 
     private _getFieldsAtVersion(version:number):ModelSchemaAttributes {
 
@@ -129,14 +103,19 @@ export class ModelSchema {
 
         for (let key in completeAttributes) {
             if (completeAttributes.hasOwnProperty(key) && completeAttributes[key].generated !== false) {
-                generatedModel[key] = completeAttributes[key].defaultValue;
+
+                if (completeAttributes[key].defaultValue instanceof Generator) {
+                    generatedModel[key] = completeAttributes[key].defaultValue.get();
+                } else {
+                    generatedModel[key] = completeAttributes[key].defaultValue;
+                }
             }
         }
 
         return generatedModel;
     }
 
-    addVersion(versionNumber:number, attributes:ModelSchemaExtension) {
+    addVersion(versionNumber:number, attributes:ModelSchemaExtension):ExtendedModelSchema {
 
         if (this._versionNumbers.indexOf(versionNumber) !== -1) {
             console.log("Model version overriding attempt. Addition is ignored.");
@@ -152,5 +131,9 @@ export class ModelSchema {
         if (attributes.deletions) {
             this._deletions[versionNumber] = attributes.deletions;
         }
+
+        let extension:ExtendedModelSchema = new ExtendedModelSchema(this, versionNumber);
+        this._extensions[versionNumber] = extension;
+        return extension;
     }
 }

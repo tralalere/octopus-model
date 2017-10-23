@@ -3,6 +3,7 @@
  */
 import {ModelSchema} from "../src/model-schema.class";
 import {Validators} from "../src/validators/validators.class";
+import {Generators} from "../src/generators/generators.class";
 
 /*var schema1:ModelSchema = new ModelSchema(1, {
     label: Validators.string().contains("test"),
@@ -39,7 +40,20 @@ schema1.addVersion(1, {
     }
 });
 
+let subSchema:ModelSchema = new ModelSchema({
+    attr1: {
+        defaultValue: "val attr1",
+        validator: Validators.string()
+    }
+});
+
 schema1.addVersion(2, {
+    additions: {
+        arr: {
+            defaultValue: Generators.array(subSchema, 5),
+            validator: Validators.array()
+        }
+    },
     deletions: [
         "label"
     ]
@@ -58,8 +72,8 @@ console.log(schema1.validateModel({
 
 console.log("0", schema1.generateModel(0));
 console.log("1", schema1.generateModel(1));
+
 console.log("2", schema1.generateModel(2));
-console.log(schema1.generateModel());
 
 /*console.log ("result", b);
 document.write(String(b));*/
