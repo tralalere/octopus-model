@@ -2,7 +2,7 @@
  * Created by Christophe on 23/10/2017.
  */
 import {Generator} from "./generator.class";
-import {DataSchema} from "../data-schema.class";
+import {DataSchema} from "../schema/data-schema.class";
 
 export class Generators {
 

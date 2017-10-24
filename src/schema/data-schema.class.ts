@@ -3,8 +3,10 @@
  */
 export abstract class DataSchema {
 
+    version:number = 0;
+
     validateModel(object:{[key:string]:any}, version:number = null):boolean {
-        console.log("validateModel must be implemented  in DataSchema sub-class");
+        console.log("validateModel must be implemented in DataSchema sub-class");
         return false
     };
 

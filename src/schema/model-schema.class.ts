@@ -1,9 +1,9 @@
 /**
  * Created by Christophe on 17/10/2017.
  */
-import {ModelSchemaAttributes} from "./interfaces/model-schema-attributes.interface";
-import {ModelSchemaExtension} from "./interfaces/model-schema-extension.interface";
-import {Generator} from "./generators/generator.class";
+import {ModelSchemaAttributes} from "../interfaces/model-schema-attributes.interface";
+import {ModelSchemaExtension} from "../interfaces/model-schema-extension.interface";
+import {Generator} from "../generators/generator.class";
 import {ExtendedModelSchema} from "./extended-model-schema.class";
 import {DataSchema} from "./data-schema.class";
 
@@ -15,13 +15,16 @@ export class ModelSchema extends DataSchema {
     private _extensions:{[key:number]:ExtendedModelSchema} = {};
 
     constructor(
-        public attributes:ModelSchemaAttributes = {},
-        public version:number = 0
+        public attributes:ModelSchemaAttributes = {}
     ) {
         super();
         
-        this._attributes[version] = attributes;
-        this._versionNumbers.push(version);
+        this._attributes[this.version] = attributes;
+        this._versionNumbers.push(this.version);
+    }
+
+    get edgeVersion():number {
+        return this._versionNumbers[this._versionNumbers.length - 1];
     }
 
     private _getFieldsAtVersion(version:number):ModelSchemaAttributes {
@@ -61,7 +64,7 @@ export class ModelSchema extends DataSchema {
     validateModel(attributes:{[key:string]:any}, version:number = null):boolean {
 
         if (version === null) {
-            version = this._versionNumbers[this._versionNumbers.length - 1];
+            version = this.edgeVersion;
         }
 
         let completeAttributes:ModelSchemaAttributes = this._getFieldsAtVersion(version);
@@ -99,7 +102,7 @@ export class ModelSchema extends DataSchema {
         let generatedModel:{[key:string]:any} = {};
 
         if (version === null) {
-            version = this._versionNumbers[this._versionNumbers.length - 1];
+            version = this.edgeVersion;
         }
 
         let completeAttributes:ModelSchemaAttributes = this._getFieldsAtVersion(version);

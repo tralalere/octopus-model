@@ -2,7 +2,7 @@
  * Created by Christophe on 18/10/2017.
  */
 import {Validator} from "./validator.class";
-import {DataSchema} from "../data-schema.class";
+import {DataSchema} from "../schema/data-schema.class";
 
 export class ArrayValidator extends Validator {
     

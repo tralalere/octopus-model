@@ -1,11 +1,11 @@
 /**
  * Created by Christophe on 17/10/2017.
  */
-import {ModelSchema} from "../src/model-schema.class";
+import {ModelSchema} from "../src/schema/model-schema.class";
 import {Validators} from "../src/validators/validators.class";
 import {Generators} from "../src/generators/generators.class";
 import {ModelSchemaExtension} from "../src/interfaces/model-schema-extension.interface";
-import {ExtendedModelSchema} from "../src/extended-model-schema.class";
+import {ExtendedModelSchema} from "../src/schema/extended-model-schema.class";
 
 var schema1:ModelSchema = new ModelSchema({
     id: {

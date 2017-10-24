@@ -8,13 +8,14 @@ export class ExtendedModelSchema extends DataSchema {
 
     constructor(
         private _schema:ModelSchema,
-        private _version:number
+        version:number
     ) {
         super();
+        this.version = version
     }
 
     generateModel():{[key:string]:any} {
-        return this._schema.generateModel(this._version);
+        return this._schema.generateModel(this.version);
     }
 
     validateModel(attributes:{[key:string]:any}):boolean {
