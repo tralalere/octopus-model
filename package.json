@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc && tsc -w",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "gulp test",
     "compile": "tsc",
     "tsc:w": "tsc -w"
+  },
+  "directories": {
+    "test": "tests"
   },
   "repository": {
     "type": "git",
@@ -20,6 +23,10 @@
   },
   "homepage": "https://github.com/tralalere/octopus-model#readme",
   "devDependencies": {
+    "@types/gulp": "^4.0.4",
+    "chai": "^4.1.2",
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^4.3.1",
     "typescript": "^2.5.3"
   },
   "dependencies": {
