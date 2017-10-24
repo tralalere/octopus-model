@@ -10,6 +10,10 @@
         packages: {
             'src': {
                 defaultExtension: "js"
+            },
+            "test": {
+                main: '../../dist/bundle.js',
+                defaultExtension: 'js'
             }
         },
         map: {

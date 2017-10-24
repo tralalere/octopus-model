@@ -7,7 +7,8 @@
     "start": "tsc && tsc -w",
     "test": "gulp test",
     "compile": "tsc",
-    "tsc:w": "tsc -w"
+    "tsc:w": "tsc -w",
+    "build": "tsc -m amd --target es5 --outFile dist/bundle.js index.ts"
   },
   "directories": {
     "test": "tests"
