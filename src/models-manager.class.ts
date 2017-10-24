@@ -66,4 +66,15 @@ export class ModelsManager {
 
         return schema.validateModel(object, version);
     }
+
+    update(type:string, object:{[key:string]:any}, version:number = null):{[key:string]:any} {
+
+        let schema:ModelSchema = this._getSchema(type);
+
+        if (!schema) {
+            return {};
+        }
+
+        return schema.updateModel(object, version);
+    }
 }

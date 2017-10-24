@@ -60,6 +60,43 @@ export class ModelSchema extends DataSchema {
 
         return attributes;
     }
+
+    private _getFieldDefaultValue(field:any):any {
+        if (field.defaultValue instanceof Generator) {
+            return field.defaultValue.get();
+        } else {
+            return field.defaultValue;
+        }
+    }
+
+    updateModel(attributes:{[key:string]:any}, version:number = null):{[key:number]:any} {
+
+        let updated:{[key:number]:any} = {};
+
+        if (!version) {
+            version = this.edgeVersion;
+        }
+
+        let fields:ModelSchemaAttributes = this._getFieldsAtVersion(version);
+
+        for (let key in fields) {
+            if (fields.hasOwnProperty(key)) {
+
+                if (attributes[key] === undefined) {
+                    // 1- le champ n'existe pas dans les attributes. Création de sa valeur par défaut
+                    updated[key] = this._getFieldDefaultValue(fields[key]);
+                } else if (!fields[key].validator.getStackValidity(attributes[key])) {
+                    // 2- le champ existe, mais avec une valeur incorrecte. Remplacement par sa valeur par défaut
+                    updated[key] = this._getFieldDefaultValue(fields[key]);
+                } else {
+                    // 3- Utilisation de la valeur actuelle
+                    updated[key] = attributes[key];
+                }
+            }
+        }
+
+        return updated;
+    }
     
     validateModel(attributes:{[key:string]:any}, version:number = null):boolean {
 

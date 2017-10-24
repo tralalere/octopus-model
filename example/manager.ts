@@ -23,7 +23,16 @@ manager.extendsSchema("schema1", {
             defaultValue: "val3",
             validator: Validators.string()
         }
-    }
+    },
+    deletions: [
+        "key1"
+    ]
 });
 
-console.log(manager.getDefaults("schema1"));
+var t1:Object = manager.getDefaults("schema1", 0);
+console.log(t1);
+
+t1["key2"] = "Valeur de test";
+
+var t2:Object = manager.update("schema1", t1);
+console.log(t2);
