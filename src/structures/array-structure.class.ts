@@ -1,18 +1,20 @@
 /**
  * Created by Christophe on 18/10/2017.
  */
-import {Validator} from "./validator.class";
+import {Structure} from "./structure.class";
 import {DataSchema} from "../schema/data-schema.class";
 
-export class ArrayValidator extends Validator {
+export class ArrayStructure extends Structure {
     
     constructor(
-        func:Function
+        func:Function,
+        defaultValue:any[]|DataSchema,
+        public arrayLength:number = 1
     ) {
-        super(func);
+        super(func, defaultValue);
     }
 
-    length(length:number):ArrayValidator {
+    length(length:number):ArrayStructure {
 
         this._stack.push((val:any[]) => {
             return val.length === length;
@@ -21,7 +23,7 @@ export class ArrayValidator extends Validator {
         return this;
     }
 
-    minLength(min:number):ArrayValidator {
+    minLength(min:number):ArrayStructure {
 
         this._stack.push((val:any[]) => {
             return val.length >= min;
@@ -30,7 +32,7 @@ export class ArrayValidator extends Validator {
         return this;
     }
 
-    maxLength(max:number):ArrayValidator {
+    maxLength(max:number):ArrayStructure {
 
         this._stack.push((val:any[]) => {
             return val.length <= max;
@@ -39,15 +41,15 @@ export class ArrayValidator extends Validator {
         return this;
     }
 
-    string():ArrayValidator {
+    string():ArrayStructure {
         return this._isTypeOf("string");
     }
 
-    number():ArrayValidator {
+    number():ArrayStructure {
         return this._isTypeOf("number");
     }
 
-    schema(schema:DataSchema, version:number = null):ArrayValidator {
+    schema(schema:DataSchema, version:number = null):ArrayStructure {
 
         this._stack.push((val:{[key:string]:any}[]) => {
 
@@ -63,7 +65,7 @@ export class ArrayValidator extends Validator {
         return this;
     }
 
-    private _isTypeOf(type:string):ArrayValidator {
+    private _isTypeOf(type:string):ArrayStructure {
 
         this._stack.push((val:any[]) => {
 

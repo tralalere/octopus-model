@@ -1,17 +1,18 @@
 /**
  * Created by Christophe on 18/10/2017.
  */
-import {Validator} from "./validator.class";
+import {Structure} from "./structure.class";
 
-export class NumberValidator extends Validator {
+export class NumberStructure extends Structure {
     
     constructor(
-        func:Function
+        func:Function,
+        defaultValue:number
     ) {
-        super(func);
+        super(func, defaultValue);
     }
 
-    min(minValue:number):NumberValidator {
+    min(minValue:number):NumberStructure {
 
         this._stack.push((val:number) => {
             return val >= minValue;
@@ -20,7 +21,7 @@ export class NumberValidator extends Validator {
         return this;
     }
 
-    max(maxValue:number):NumberValidator {
+    max(maxValue:number):NumberStructure {
 
         this._stack.push((val:number) => {
             return val <= maxValue;
@@ -29,7 +30,7 @@ export class NumberValidator extends Validator {
         return this;
     }
 
-    positive():NumberValidator {
+    positive():NumberStructure {
 
         this._stack.push((val:number) => {
             return val >= 0;

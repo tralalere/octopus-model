@@ -1,16 +1,20 @@
+import {DataSchema} from "../schema/data-schema.class";
 /**
  * Created by Christophe on 17/10/2017.
  */
 
-export class Validator {
+export class Structure {
 
     protected _stack:Function[] = [];
 
-    constructor(func:Function) {
+    constructor(
+        func:Function,
+        private _defaultValue:any
+    ) {
         this._stack.push(func);
     }
 
-    nonNull():Validator {
+    nonNull():Structure {
 
         this._stack.push((value:any) => {
             return value !== null;
@@ -19,7 +23,7 @@ export class Validator {
         return this;
     }
 
-    custom(func:Function):Validator {
+    custom(func:Function):Structure {
 
         this._stack.push((value:any) => {
             return func(value);
@@ -37,6 +41,14 @@ export class Validator {
         }
 
         return true;
+    }
+
+    get defaultValue():any {
+        if (this._defaultValue instanceof DataSchema) {
+            return (this._defaultValue as DataSchema).generateModel();
+        } else {
+            return this._defaultValue;
+        }
     }
 
 }

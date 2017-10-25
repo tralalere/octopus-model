@@ -6,6 +6,7 @@ import {ModelSchemaExtension} from "../interfaces/model-schema-extension.interfa
 import {Generator} from "../generators/generator.class";
 import {ExtendedModelSchema} from "./extended-model-schema.class";
 import {DataSchema} from "./data-schema.class";
+import {Structure} from "../structures/structure.class";
 
 export class ModelSchema extends DataSchema {
 
@@ -61,12 +62,8 @@ export class ModelSchema extends DataSchema {
         return attributes;
     }
 
-    private _getFieldDefaultValue(field:any):any {
-        if (field.defaultValue instanceof Generator) {
-            return field.defaultValue.get();
-        } else {
-            return field.defaultValue;
-        }
+    private _getFieldDefaultValue(field:Structure):any {
+        return field.defaultValue;
     }
 
     updateModel(attributes:{[key:string]:any}, version:number = null):{[key:number]:any} {
@@ -85,7 +82,7 @@ export class ModelSchema extends DataSchema {
                 if (attributes[key] === undefined) {
                     // 1- le champ n'existe pas dans les attributes. Création de sa valeur par défaut
                     updated[key] = this._getFieldDefaultValue(fields[key]);
-                } else if (!fields[key].validator.getStackValidity(attributes[key])) {
+                } else if (!fields[key].getStackValidity(attributes[key])) {
                     // 2- le champ existe, mais avec une valeur incorrecte. Remplacement par sa valeur par défaut
                     updated[key] = this._getFieldDefaultValue(fields[key]);
                 } else {
@@ -121,11 +118,11 @@ export class ModelSchema extends DataSchema {
             if (completeAttributes.hasOwnProperty(key)) {
 
                 // TODO: verifier si on peut tester d'une meilleure manière la non-définition de la valeur
-                if (attributes[key] === undefined && completeAttributes[key].required !== false) {
+                if (attributes[key] === undefined) {
                     return false;
                 }
 
-                if (attributes[key] && !completeAttributes[key].validator.getStackValidity(attributes[key])) {
+                if (attributes[key] && !completeAttributes[key].getStackValidity(attributes[key])) {
                     return false;
                 }
             }
@@ -145,13 +142,8 @@ export class ModelSchema extends DataSchema {
         let completeAttributes:ModelSchemaAttributes = this._getFieldsAtVersion(version);
 
         for (let key in completeAttributes) {
-            if (completeAttributes.hasOwnProperty(key) && completeAttributes[key].generated !== false) {
-
-                if (completeAttributes[key].defaultValue instanceof Generator) {
-                    generatedModel[key] = completeAttributes[key].defaultValue.get();
-                } else {
-                    generatedModel[key] = completeAttributes[key].defaultValue;
-                }
+            if (completeAttributes.hasOwnProperty(key)) {
+                generatedModel[key] = completeAttributes[key].defaultValue;
             }
         }
 

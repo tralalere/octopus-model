@@ -1,18 +1,19 @@
 /**
  * Created by Christophe on 18/10/2017.
  */
-import {Validator} from "./validator.class";
+import {Structure} from "./structure.class";
 import {DataSchema} from "../schema/data-schema.class";
 
-export class ObjectValidator extends Validator {
+export class ObjectStructure extends Structure {
 
     constructor(
-        func:Function
+        func:Function,
+        defaultValue:Object
     ) {
-        super(func);
+        super(func, defaultValue);
     }
 
-    schema(schema:DataSchema, version:number = null):ObjectValidator {
+    schema(schema:DataSchema, version:number = null):ObjectStructure {
 
         this._stack.push((val:{[key:string]:any}) => {
             return schema.validateModel(val, version);
@@ -21,7 +22,7 @@ export class ObjectValidator extends Validator {
         return this;
     }
 
-    keySchema(key:string, schema:DataSchema, version:number = null):ObjectValidator {
+    keySchema(key:string, schema:DataSchema, version:number = null):ObjectStructure {
 
         this._stack.push((val:{[key:string]:any}) => {
 
