@@ -9,7 +9,7 @@ export class Structure {
 
     constructor(
         func:Function,
-        private _defaultValue:any
+        protected _defaultValue:any
     ) {
         this._stack.push(func);
     }

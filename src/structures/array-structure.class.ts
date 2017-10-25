@@ -9,9 +9,23 @@ export class ArrayStructure extends Structure {
     constructor(
         func:Function,
         defaultValue:any[]|DataSchema,
-        public arrayLength:number = 1
+        private _arrayLength:number = 1
     ) {
         super(func, defaultValue);
+    }
+
+    get defaultValue():any {
+        if (this._defaultValue instanceof DataSchema) {
+            let arr:any[] = [];
+
+            for (let i:number = 0; i < this._arrayLength; i++) {
+                arr.push((this._defaultValue as DataSchema).generateModel());
+            }
+
+            return arr;
+        } else {
+            return this._defaultValue;
+        }
     }
 
     length(length:number):ArrayStructure {
