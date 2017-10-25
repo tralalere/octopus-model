@@ -1,26 +1,17 @@
 var octopusModel = require('../dist/bundle.js');
-var ModelSchema = octopusModel.ModelSchema;
-var Validators = octopusModel.Validators;
+var ModelsManager = octopusModel.ModelsManager;
+var Structures = octopusModel.Structures;
 
-var schemas = {
+var manager = new ModelsManager();
 
-    schema1: new ModelSchema({
-        key1: {
-            defaultValue: "",
-            validator: Validators.string()
-        },
-        key2: {
-            defaultValue: "",
-            validator: Validators.string()
-        }
-    }),
+manager.addSchema("schema1", {
+    key1: Structures.string("val1").minLength(3).maxLength(20)
+});
 
-    testCase1: {
-        key1: "ok",
-        key2: "ok"
-    }
+var testSchemas = {
+
+
 };
 
 
-
-module.exports = schemas;
+module.exports = testSchemas;
