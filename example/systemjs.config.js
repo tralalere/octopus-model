@@ -11,7 +11,7 @@
             'src': {
                 defaultExtension: "js"
             },
-            "test": {
+            "modules-manager": {
                 main: '../../dist/bundle.js',
                 defaultExtension: 'js'
             }

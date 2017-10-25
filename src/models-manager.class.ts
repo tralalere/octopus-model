@@ -4,7 +4,6 @@
 import {ModelSchemaAttributes} from "./interfaces/model-schema-attributes.interface";
 import {ModelSchemaExtension} from "./interfaces/model-schema-extension.interface";
 import {ModelSchema} from "./schema/model-schema.class";
-import {ExtendedModelSchema} from "./schema/extended-model-schema.class";
 
 export class ModelsManager {
 
