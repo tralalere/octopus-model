@@ -46,8 +46,25 @@ export class ModelSchema extends DataSchema {
         let versions:number[] = this._versionNumbers.slice(0, versionIndex + 1);
 
         for (let v of versions) {
-            let fields:ModelSchemaAttributes = this._getExclusiveFieldsAtVersion(version);
+
+            if (this._deletions[v]) {
+                // suppressions
+                for (let deletedKey of this._deletions[v]) {
+
+                    for (let vid in attributes) {
+                        if (attributes.hasOwnProperty(vid) && attributes[vid][deletedKey] !== undefined) {
+                            delete attributes[vid][deletedKey];
+                        }
+                    }
+
+                }
+            }
+
+            let fields:ModelSchemaAttributes = this._attributes[v];
+            attributes[v] = fields;
         }
+
+        return attributes;
     }
 
     private _getExclusiveFieldsAtVersion(version:number):ModelSchemaAttributes {
@@ -213,36 +230,34 @@ export class ModelSchema extends DataSchema {
         return extension;
     }
 
+    private _getVersionPrefix(version:number):string {
+        return "v" + version + "_";
+    }
+
     getFromVersionedAttributes(versioned:VersionedAttributes, targetVersion:number = null):{[key:string]:any} {
+
+        console.log("ff", this._getExclusiveFields(targetVersion));
 
         if (targetVersion === null) {
             targetVersion = this.edgeVersion;
         }
 
-        console.log(versioned.attributes);
-
+        let fields:{[key:number]:ModelSchemaAttributes} = this._getExclusiveFields(targetVersion);
         let retAttributes:{[key:string]:any} = {};
-        let version:number = versioned.version;
         let vAttributes:{[key:string]:any} = versioned.attributes;
-        let versionIndex:number = this._versionNumbers.indexOf(targetVersion);
 
-        if (versionIndex === -1) {
-            return null;
-        }
+        for (let vnum in fields) {
+            if (fields.hasOwnProperty(vnum)) {
+                let versionFields:ModelSchemaAttributes = fields[vnum];
 
-        let subVersions:number[] = this._versionNumbers.slice(0, versionIndex + 1);
+                for (let key in vAttributes) {
+                    if (vAttributes.hasOwnProperty(key)) {
+                        if (vAttributes[key] !== undefined && key.indexOf("v" + vnum + "_") === 0) {
+                            let newKey:string = key.replace("v" + vnum + "_", "");
 
-        for (let vnum of subVersions) {
-            let exclusives:ModelSchemaAttributes = this._getExclusiveFieldsAtVersion(vnum);
-
-            for (let key in vAttributes) {
-                if (vAttributes.hasOwnProperty(key)) {
-                    console.log(key);
-                    if (vAttributes[key] !== undefined && key.indexOf("v" + vnum + "_") === 0) {
-                        let newKey:string = key.replace("v" + vnum + "_", "");
-
-                        if (exclusives[newKey] !== undefined) {
-                            retAttributes[newKey] = vAttributes[key];
+                            if (versionFields[newKey] !== undefined) {
+                                retAttributes[newKey] = vAttributes[key];
+                            }
                         }
                     }
                 }
@@ -271,7 +286,7 @@ export class ModelSchema extends DataSchema {
             for (let key in exclusives) {
                 if (exclusives.hasOwnProperty(key)) {
                     if (attributes[key] !== undefined) {
-                        let newKey:string = "v" + vnum + "_" + key;
+                        let newKey:string = this._getVersionPrefix(vnum) + key;
                         retAttributes[newKey] = attributes[key];
                     }
                 }
