@@ -7,6 +7,7 @@ import {Generator} from "../generators/generator.class";
 import {ExtendedModelSchema} from "./extended-model-schema.class";
 import {DataSchema} from "./data-schema.class";
 import {Structure} from "../structures/structure.class";
+import {VersionedAttributes} from "../interfaces/versioned-attributes.interface";
 
 export class ModelSchema extends DataSchema {
 
@@ -26,6 +27,46 @@ export class ModelSchema extends DataSchema {
 
     get edgeVersion():number {
         return this._versionNumbers[this._versionNumbers.length - 1];
+    }
+
+    private _getExclusiveFields(version:number = null):{[key:number]:ModelSchemaAttributes} {
+
+        if (version === null) {
+            version = this.edgeVersion;
+        }
+
+        let attributes:{[key:number]:ModelSchemaAttributes} = {};
+
+        let versionIndex:number = this._versionNumbers.indexOf(version);
+
+        if (versionIndex === -1) {
+            return null;
+        }
+
+        let versions:number[] = this._versionNumbers.slice(0, versionIndex + 1);
+
+        for (let v of versions) {
+            let fields:ModelSchemaAttributes = this._getExclusiveFieldsAtVersion(version);
+        }
+    }
+
+    private _getExclusiveFieldsAtVersion(version:number):ModelSchemaAttributes {
+
+        let attributes:ModelSchemaAttributes = {};
+
+        let versionIndex:number = this._versionNumbers.indexOf(version);
+
+        if (versionIndex === -1) {
+            return null;
+        }
+
+        for (let key in this._attributes[version]) {
+            if (this._attributes[version].hasOwnProperty(key)) {
+                attributes[key] = this._attributes[version][key];
+            }
+        }
+
+        return attributes;
     }
 
     private _getFieldsAtVersion(version:number):ModelSchemaAttributes {
@@ -170,5 +211,76 @@ export class ModelSchema extends DataSchema {
         let extension:ExtendedModelSchema = new ExtendedModelSchema(this, versionNumber);
         this._extensions[versionNumber] = extension;
         return extension;
+    }
+
+    getFromVersionedAttributes(versioned:VersionedAttributes, targetVersion:number = null):{[key:string]:any} {
+
+        if (targetVersion === null) {
+            targetVersion = this.edgeVersion;
+        }
+
+        console.log(versioned.attributes);
+
+        let retAttributes:{[key:string]:any} = {};
+        let version:number = versioned.version;
+        let vAttributes:{[key:string]:any} = versioned.attributes;
+        let versionIndex:number = this._versionNumbers.indexOf(targetVersion);
+
+        if (versionIndex === -1) {
+            return null;
+        }
+
+        let subVersions:number[] = this._versionNumbers.slice(0, versionIndex + 1);
+
+        for (let vnum of subVersions) {
+            let exclusives:ModelSchemaAttributes = this._getExclusiveFieldsAtVersion(vnum);
+
+            for (let key in vAttributes) {
+                if (vAttributes.hasOwnProperty(key)) {
+                    console.log(key);
+                    if (vAttributes[key] !== undefined && key.indexOf("v" + vnum + "_") === 0) {
+                        let newKey:string = key.replace("v" + vnum + "_", "");
+
+                        if (exclusives[newKey] !== undefined) {
+                            retAttributes[newKey] = vAttributes[key];
+                        }
+                    }
+                }
+            }
+        }
+
+        return retAttributes;
+    }
+    
+    getVersionedAttributes(attributes:{[key:string]:any}, version:number = null):VersionedAttributes {
+
+        if (version === null) {
+            version = this.edgeVersion;
+        }
+
+        attributes = this.updateModel(attributes, version);
+
+        let retAttributes:{[key:string]:any} = {};
+        let versionIndex:number = this._versionNumbers.indexOf(version);
+
+        let subVersions:number[] = this._versionNumbers.slice(0, versionIndex + 1);
+
+        for (let vnum of subVersions) {
+            let exclusives:ModelSchemaAttributes = this._getExclusiveFieldsAtVersion(vnum);
+
+            for (let key in exclusives) {
+                if (exclusives.hasOwnProperty(key)) {
+                    if (attributes[key] !== undefined) {
+                        let newKey:string = "v" + vnum + "_" + key;
+                        retAttributes[newKey] = attributes[key];
+                    }
+                }
+            }
+        }
+
+        return {
+            version: version,
+            attributes: retAttributes
+        };
     }
 }
