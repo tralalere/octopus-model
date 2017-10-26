@@ -34,7 +34,7 @@ export class Structures {
     static object(defaultValue:Object|DataSchema = {}):ObjectStructure {
 
         return new ObjectStructure((val:any) => {
-            return (typeof val) === "object";
+            return (typeof val) === "object" && !Array.isArray(val);
         }, defaultValue);
     }
 

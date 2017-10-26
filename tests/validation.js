@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var structures = require("../test-datas/structures.js");
+var structures = require("./structures.js");
 
 describe('Structures validation', function() {
 
@@ -26,6 +26,7 @@ describe('Structures validation', function() {
             if (Array.isArray(structures[key]["negative"])) {
                 
                 structures[key]["negative"].forEach(function (elemb, index) {
+                    //console.log(key);
                     it(key + " negative " + index, function() {
                         var elem = structures[key];
                         expect(elem["structure"].getStackValidity(elemb)).to.equal(false);
