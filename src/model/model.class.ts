@@ -12,6 +12,8 @@ export class Model {
         data:Object,
         private _schema:ModelSchema
     ) {
+
+        // pas ici
         if (Object.keys(data).length === 2 && data["version"] !== undefined && data["attributes"] !== undefined) {
             // formatted object
             this.attributes = data["attributes"];
@@ -23,7 +25,18 @@ export class Model {
     }
 
     fromStore(data:Object) {
-        
+        if (Object.keys(data).length === 2 && data["version"] !== undefined && data["attributes"] !== undefined) {
+            // formatted object
+            this.attributes = data["attributes"];
+            this.version = data["version"];
+        } else {
+            // raw object
+            this.attributes = data;
+        }
+    }
+
+    fromFront(data:Object) {
+
     }
 
     get validated():boolean {

@@ -124,6 +124,23 @@ var structures = {
             {}
         ]
     },
+    complexObject2: {
+        structure: Structures.object().keySchema("test", subSchema2),
+        positive: [
+            {
+                test: subSchemaData2True
+            }
+        ],
+        negative: [
+            {
+                test: subSchemaData2False
+            },
+            {
+                test2: subSchemaData2True
+            },
+            {}
+        ]
+    },
     array: {
         structure: Structures.array(),
         positive: [
@@ -136,6 +153,28 @@ var structures = {
             true,
             false,
             {}
+        ]
+    },
+    complexArray: {
+        structure: Structures.array().length(3).schema(subSchema2),
+        positive: [
+            [
+                subSchemaData2True,
+                subSchemaData2True,
+                subSchemaData2True
+            ]
+        ],
+        negative: [
+            [
+                subSchemaData2True,
+                subSchemaData2False,
+                subSchemaData2True
+            ],
+            [],
+            [
+                subSchemaData2True,
+                subSchemaData2True
+            ]
         ]
     }
 };
