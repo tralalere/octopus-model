@@ -3,6 +3,5 @@
  */
 
 export interface VersionedAttributes {
-    version:number;
-    attributes:{[key:string]:any};
+    [key:string]:any;
 }

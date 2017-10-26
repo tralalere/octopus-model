@@ -17,14 +17,14 @@ schema.addVersion(1, {
     ]
 });
 
-/*console.log(schema.getVersionedAttributes({
+console.log(schema.getVersionedAttributes({
     key1: "ok1",
     key2: "ok2",
     key3: "ok3",
     key4: "ok4",
-}));*/
+}));
 
-var cc:VersionedAttributes = {
+/*var cc:VersionedAttributes = {
     version: 1,
     attributes: {
         v0_key1: "ok1",
@@ -34,4 +34,4 @@ var cc:VersionedAttributes = {
     }
 };
 
-console.log(schema.getFromVersionedAttributes(cc, 1));
+console.log(schema.getFromVersionedAttributes(cc, 1));*/

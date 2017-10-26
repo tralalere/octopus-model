@@ -234,9 +234,7 @@ export class ModelSchema extends DataSchema {
         return "v" + version + "_";
     }
 
-    getFromVersionedAttributes(versioned:VersionedAttributes, targetVersion:number = null):{[key:string]:any} {
-
-        console.log("ff", this._getExclusiveFields(targetVersion));
+    getFromVersionedAttributes(versioned:VersionedAttributes, targetVersion:number = null, usePrefix:boolean = true):{[key:string]:any} {
 
         if (targetVersion === null) {
             targetVersion = this.edgeVersion;
@@ -244,7 +242,7 @@ export class ModelSchema extends DataSchema {
 
         let fields:{[key:number]:ModelSchemaAttributes} = this._getExclusiveFields(targetVersion);
         let retAttributes:{[key:string]:any} = {};
-        let vAttributes:{[key:string]:any} = versioned.attributes;
+        let vAttributes:{[key:string]:any} = versioned;
 
         for (let vnum in fields) {
             if (fields.hasOwnProperty(vnum)) {
@@ -273,8 +271,6 @@ export class ModelSchema extends DataSchema {
             version = this.edgeVersion;
         }
 
-        attributes = this.updateModel(attributes, version);
-
         let retAttributes:{[key:string]:any} = {};
         let versionIndex:number = this._versionNumbers.indexOf(version);
 
@@ -286,16 +282,13 @@ export class ModelSchema extends DataSchema {
             for (let key in exclusives) {
                 if (exclusives.hasOwnProperty(key)) {
                     if (attributes[key] !== undefined) {
-                        let newKey:string = this._getVersionPrefix(vnum) + key;
+                        let newKey:string = this._getVersionPrefix(vnum) + key
                         retAttributes[newKey] = attributes[key];
                     }
                 }
             }
         }
 
-        return {
-            version: version,
-            attributes: retAttributes
-        };
+        return retAttributes;
     }
 }
