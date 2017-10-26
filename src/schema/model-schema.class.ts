@@ -265,7 +265,7 @@ export class ModelSchema extends DataSchema {
         return retAttributes;
     }
     
-    getVersionedAttributes(attributes:{[key:string]:any}, version:number = null):VersionedAttributes {
+    getVersionedAttributes(attributes:{[key:string]:any}, version:number = null, usePrefix:boolean = true):VersionedAttributes {
 
         if (version === null) {
             version = this.edgeVersion;
@@ -282,7 +282,7 @@ export class ModelSchema extends DataSchema {
             for (let key in exclusives) {
                 if (exclusives.hasOwnProperty(key)) {
                     if (attributes[key] !== undefined) {
-                        let newKey:string = this._getVersionPrefix(vnum) + key
+                        let newKey:string = this._getVersionPrefix(vnum) + key;
                         retAttributes[newKey] = attributes[key];
                     }
                 }
