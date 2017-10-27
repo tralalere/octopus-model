@@ -55,7 +55,6 @@ console.log("val1_1v", val1_1v);
 var merged = ModelsManager.mergeVersions(val1_1v, val1_0v);
 console.log("merged", merged);
 
-
 // on tente de repasser en version 0
 var v0 = manager.toClientData("schema1", merged, 0);
 console.log("nouvelle v0", v0);
@@ -63,5 +62,5 @@ console.log("nouvelle v0", v0);
 var v1 = manager.toClientData("schema1", merged, 1);
 console.log("nouvelle v1", v1);
 
-var blindValidation = manager.blindValidate("schema1", v0);
+var blindValidation = manager.blindValidate("schema1", v1);
 console.log("blind", blindValidation);

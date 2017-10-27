@@ -60,11 +60,22 @@ export class ModelSchema extends DataSchema {
                 }
             }
 
-            let fields:ModelSchemaAttributes = this._attributes[v];
+            let fields:ModelSchemaAttributes = this._copyObject(this._attributes[v]);
             attributes[v] = fields;
         }
 
         return attributes;
+    }
+
+    private _copyObject(object:{[key:string]:any}):{[key:string]:any} {
+
+        let copy:{[key:string]:any} = {};
+
+        for (let key of Object.keys(object)) {
+            copy[key] = object[key];
+        }
+
+        return copy;
     }
 
     private _getExclusiveFieldsAtVersion(version:number):ModelSchemaAttributes {
@@ -102,8 +113,9 @@ export class ModelSchema extends DataSchema {
             let versionNumber:number = versions[i];
             let attributesInVersion:ModelSchemaAttributes = this._attributes[versionNumber];
 
+            //console.log("att in", attributesInVersion, this._attributes);
+
             if (this._deletions[versionNumber]) {
-                //console.log("deletions", versionNumber, this._deletions[versionNumber]);
 
                 for (let key of this._deletions[versionNumber]) {
                     if (attributes[key]) {
@@ -120,6 +132,8 @@ export class ModelSchema extends DataSchema {
         }
 
         //console.log("vers", version, versions, attributes);
+
+        //console.log(version, versions, attributes);
         return attributes;
     }
 
@@ -135,7 +149,7 @@ export class ModelSchema extends DataSchema {
             version = this.edgeVersion;
         }
 
-        console.log("filter", attributes, version);
+        //console.log("filter", attributes, version);
 
         let fields:ModelSchemaAttributes = this._getFieldsAtVersion(version);
 
@@ -166,7 +180,7 @@ export class ModelSchema extends DataSchema {
 
         let completeAttributes:ModelSchemaAttributes = this._getFieldsAtVersion(version);
 
-        console.log("ca", version, completeAttributes);
+        //console.log("ca", version, completeAttributes);
 
         for (let key in attributes) {
 
@@ -198,13 +212,13 @@ export class ModelSchema extends DataSchema {
 
     blindValidate(attributes:{[key:string]:any}):boolean {
 
-        for (let version in this._versionNumbers) {
-            if (this._versionNumbers.hasOwnProperty(version)) {
-                var updated:{[key:string]:any} = this.filterModel(attributes, +version);
-                if (this.validateModel(updated, +version)) {
-                    console.log(version, attributes, updated);
-                    return true;
-                }
+        for (let version of this._versionNumbers) {
+
+            var updated:{[key:string]:any} = this.filterModel(attributes, version);
+
+            if (this.validateModel(attributes, version)) {
+                console.log("Validated at", version, attributes);
+                return true;
             }
         }
 
