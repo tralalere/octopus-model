@@ -1,6 +1,5 @@
 import {ModelSchema} from "../src/schema/model-schema.class";
 import {Structures} from "../src/structures/structures.class";
-import {VersionedAttributes} from "../src/interfaces/versioned-attributes.interface";
 
 var schema:ModelSchema = new ModelSchema({
     key1: Structures.string("default1"),

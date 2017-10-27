@@ -1,7 +1,7 @@
 import {ModelsManager} from "../src/models-manager.class";
 import {Structures} from "../src/structures/structures.class";
 
-var manager:ModelsManager = new ModelsManager(false);
+var manager:ModelsManager = new ModelsManager(true);
 
 manager.addSchema("schema1", {
     key1: Structures.string("val1"),
@@ -28,10 +28,10 @@ manager.extendsSchema("schema1", {
 });
 
 // version client
-var val1_0:Object = manager.getDefaults("schema1", 0);
-
-val1_0["key1"] = "testkey1";
-val1_0["key3"] = "yepyep";
+var val1_0:Object = manager.getDefaults("schema1", {
+    key1: "hihihi",
+    key2: "hohoho"
+}, 0);
 
 console.log("val1_0", val1_0);
 
@@ -62,3 +62,6 @@ console.log("nouvelle v0", v0);
 
 var v1 = manager.toClientData("schema1", merged, 1);
 console.log("nouvelle v1", v1);
+
+var blindValidation = manager.blindValidate("schema1", v0);
+console.log("blind", blindValidation);

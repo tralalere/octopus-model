@@ -103,6 +103,8 @@ export class ModelSchema extends DataSchema {
             let attributesInVersion:ModelSchemaAttributes = this._attributes[versionNumber];
 
             if (this._deletions[versionNumber]) {
+                //console.log("deletions", versionNumber, this._deletions[versionNumber]);
+
                 for (let key of this._deletions[versionNumber]) {
                     if (attributes[key]) {
                         delete attributes[key];
@@ -117,6 +119,7 @@ export class ModelSchema extends DataSchema {
             }
         }
 
+        //console.log("vers", version, versions, attributes);
         return attributes;
     }
 
@@ -124,13 +127,15 @@ export class ModelSchema extends DataSchema {
         return field.defaultValue;
     }
 
-    updateModel(attributes:{[key:string]:any}, version:number = null):{[key:number]:any} {
+    filterModel(attributes:{[key:string]:any}, version:number = null):{[key:number]:any} {
 
         let updated:{[key:number]:any} = {};
 
         if (!version) {
             version = this.edgeVersion;
         }
+
+        console.log("filter", attributes, version);
 
         let fields:ModelSchemaAttributes = this._getFieldsAtVersion(version);
 
@@ -161,6 +166,8 @@ export class ModelSchema extends DataSchema {
 
         let completeAttributes:ModelSchemaAttributes = this._getFieldsAtVersion(version);
 
+        console.log("ca", version, completeAttributes);
+
         for (let key in attributes) {
 
             if (attributes.hasOwnProperty(key)) {
@@ -189,7 +196,22 @@ export class ModelSchema extends DataSchema {
         return true;
     }
 
-    generateModel(version:number = null):{[key:string]:any} {
+    blindValidate(attributes:{[key:string]:any}):boolean {
+
+        for (let version in this._versionNumbers) {
+            if (this._versionNumbers.hasOwnProperty(version)) {
+                var updated:{[key:string]:any} = this.filterModel(attributes, +version);
+                if (this.validateModel(updated, +version)) {
+                    console.log(version, attributes, updated);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    generateModel(version:number = null, defaults:{[key:string]:any} = null):{[key:string]:any} {
 
         let generatedModel:{[key:string]:any} = {};
 
@@ -199,9 +221,29 @@ export class ModelSchema extends DataSchema {
 
         let completeAttributes:ModelSchemaAttributes = this._getFieldsAtVersion(version);
 
+        // vérification des defaults
+        if (defaults) {
+            for (let key of Object.keys(defaults)) {
+                if (completeAttributes[key] === undefined) {
+                    console.log("Generate model: incorrect field in default - " + key);
+                }
+            }
+        }
+
         for (let key in completeAttributes) {
             if (completeAttributes.hasOwnProperty(key)) {
-                generatedModel[key] = completeAttributes[key].defaultValue;
+                if (defaults && defaults[key] !== undefined) {
+
+                    if (!completeAttributes[key].getStackValidity(defaults[key])) {
+                        console.log("Generate model: default value do not match the schema - " + key);
+                        generatedModel[key] = completeAttributes[key].defaultValue;
+                    } else {
+                        generatedModel[key] = defaults[key];
+                    }
+
+                } else {
+                    generatedModel[key] = completeAttributes[key].defaultValue;
+                }
             }
         }
 
@@ -250,8 +292,15 @@ export class ModelSchema extends DataSchema {
 
                 for (let key in vAttributes) {
                     if (vAttributes.hasOwnProperty(key)) {
-                        if (vAttributes[key] !== undefined && key.indexOf("v" + vnum + "_") === 0) {
-                            let newKey:string = key.replace("v" + vnum + "_", "");
+                        if (vAttributes[key] !== undefined) {
+
+                            let newKey:string;
+
+                            if (usePrefix && key.indexOf("v" + vnum + "_") === 0) {
+                                newKey = key.replace("v" + vnum + "_", "");
+                            } else {
+                                newKey = key;
+                            }
 
                             if (versionFields[newKey] !== undefined) {
                                 retAttributes[newKey] = vAttributes[key];
@@ -280,9 +329,11 @@ export class ModelSchema extends DataSchema {
             let exclusives:ModelSchemaAttributes = this._getExclusiveFieldsAtVersion(vnum);
 
             for (let key in exclusives) {
+
                 if (exclusives.hasOwnProperty(key)) {
+
                     if (attributes[key] !== undefined) {
-                        let newKey:string = this._getVersionPrefix(vnum) + key;
+                        let newKey:string = usePrefix ? this._getVersionPrefix(vnum) + key : key;
                         retAttributes[newKey] = attributes[key];
                     }
                 }

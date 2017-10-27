@@ -48,7 +48,7 @@ export class ModelsManager {
         return this._schemas[type];
     }
 
-    getDefaults(type:string, version:number = null):{[key:string]:any} {
+    getDefaults(type:string, defaults:{[key:string]:any} = null, version:number = null):{[key:string]:any} {
 
         let schema:ModelSchema = this._getSchema(type);
 
@@ -57,7 +57,7 @@ export class ModelsManager {
             return null;
         }
 
-        return schema.generateModel(version);
+        return schema.generateModel(version, defaults);
     }
 
     validate(type:string, object:{[key:string]:any}, version:number = null):boolean {
@@ -71,6 +71,17 @@ export class ModelsManager {
         return schema.validateModel(object, version);
     }
 
+    blindValidate(type:string, object:{[key:string]:any}):boolean {
+
+        let schema:ModelSchema = this._getSchema(type);
+
+        if (!schema) {
+            return false;
+        }
+
+        return schema.blindValidate(object);
+    }
+
     update(type:string, object:{[key:string]:any}, version:number = null):{[key:string]:any} {
 
         let schema:ModelSchema = this._getSchema(type);
@@ -79,7 +90,7 @@ export class ModelsManager {
             return {};
         }
 
-        return schema.updateModel(object, version);
+        return schema.filterModel(object, version);
     }
 
     toStoreData(type:string, object:{[key:string]:any}, version:number = null):VersionedAttributes {
@@ -90,7 +101,7 @@ export class ModelsManager {
             return null;
         }
 
-        return schema.getVersionedAttributes(object, version);
+        return schema.getVersionedAttributes(object, version, this._usePrefix);
     }
 
     toClientData(type:string, object:{[key:string]:any}, version:number = null):{[key:string]:any} {
@@ -101,7 +112,7 @@ export class ModelsManager {
             return null;
         }
 
-        return schema.getFromVersionedAttributes(object, version);
+        return schema.getFromVersionedAttributes(object, version, this._usePrefix);
     }
 
     static mergeVersions(storeVersion:VersionedAttributes, clientVersion:VersionedAttributes):VersionedAttributes {

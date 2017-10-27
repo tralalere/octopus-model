@@ -9,7 +9,7 @@
     "compile": "tsc",
     "tsc:w": "tsc -w",
     "clean": "rimraf bundles coverage index.js.map index.d.ts src/**/*.map src/**/*.d.ts src/**/*.metadata.json src/**/*.js settings/**/*.d.ts settings/**/*.metadata.json settings/**/*.js index.d.ts index.metadata.json index.js",
-    "build": "webpack"
+    "build": "gulp test && webpack"
   },
   "directories": {
     "test": "tests"
