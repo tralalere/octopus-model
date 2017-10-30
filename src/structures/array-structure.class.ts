@@ -8,7 +8,7 @@ export class ArrayStructure extends Structure {
     
     constructor(
         func:Function,
-        defaultValue:any[]|DataSchema,
+        defaultValue:any[]|DataSchema|Structure,
         private _arrayLength:number = 1
     ) {
         super(func, defaultValue);
@@ -23,7 +23,16 @@ export class ArrayStructure extends Structure {
             }
 
             return arr;
-        } else {
+        } else if (this._defaultValue instanceof Structure) {
+            let arr:any[] = [];
+
+            for (let i:number = 0; i < this._arrayLength; i++) {
+                arr.push((this._defaultValue as Structure).defaultValue);
+            }
+
+            return arr;
+        }
+        else {
             return this._defaultValue;
         }
     }
@@ -63,13 +72,20 @@ export class ArrayStructure extends Structure {
         return this._isTypeOf("number");
     }
 
-    schema(schema:DataSchema, version:number = null):ArrayStructure {
+    schema(schema:DataSchema|Structure, version:number = null):ArrayStructure {
 
         this._stack.push((val:{[key:string]:any}[]) => {
 
             for (let elem of val) {
-                if (!schema.validateModel(elem, version)) {
-                    return false;
+
+                if (schema instanceof DataSchema) {
+                    if (!(schema as DataSchema).validateModel(elem, version)) {
+                        return false;
+                    }
+                } else if (schema instanceof Structure) {
+                    if (!(schema as Structure).getStackValidity(elem)) {
+                        return false;
+                    }
                 }
             }
 

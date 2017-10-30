@@ -24,7 +24,7 @@ export class Structures {
         }, defaultValue);
     }
     
-    static array(defaultValue:any[]|DataSchema = [], length:number = 1):ArrayStructure {
+    static array(defaultValue:any[]|DataSchema|Structure = [], length:number = 1):ArrayStructure {
         
         return new ArrayStructure((val:any) => {
             return Array.isArray(val);
