@@ -4,3 +4,4 @@
 export * from "./src/models-manager.class";
 export * from "./src/schema/model-schema.class";
 export * from "./src/structures/structures.class";
+export * from "./src/model/model.class";
