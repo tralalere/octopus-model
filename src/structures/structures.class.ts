@@ -7,6 +7,7 @@ import {ArrayStructure} from "./array-structure.class";
 import {ObjectStructure} from "./object-structure.class";
 import {Structure} from "./structure.class";
 import {DataSchema} from "../schema/data-schema.class";
+import {DateStructure} from "./date-structure.class";
 
 export class Structures {
 
@@ -15,6 +16,13 @@ export class Structures {
         return new StringStructure((val:any) => {
             return (typeof val) === "string";
         }, defaultValue);
+    }
+
+    static date(timestamp: number = null): DateStructure {
+
+        return new DateStructure((val: any) => {
+            return (typeof val) === "number";
+        }, timestamp);
     }
 
     static number(defaultValue:number = 0):NumberStructure {

@@ -141,7 +141,7 @@ export class ModelSchema extends DataSchema {
         return field.defaultValue;
     }
 
-    filterModel(attributes:{[key:string]:any}, version:number = null):{[key:number]:any} {
+    filterModel(attributes:{[key:string]:any}, version:number = null):{[key:string]:any} {
 
         let updated:{[key:number]:any} = {};
 

@@ -46,6 +46,8 @@ export class Structure {
     get defaultValue():any {
         if (this._defaultValue instanceof DataSchema) {
             return (this._defaultValue as DataSchema).generateModel();
+        } if (typeof this._defaultValue === "function") {
+            return this._defaultValue();
         } else {
             return this._defaultValue;
         }
